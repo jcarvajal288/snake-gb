@@ -1,5 +1,7 @@
 #include <gb/gb.h>
+#include <stdbool.h>
 #include "../sprites/head_sprite.h"
+#include "random.h"
 
 #define TILE_SIZE 8
 
@@ -12,7 +14,15 @@ void init_snake(void) {
     move_sprite(0, snake_x, snake_y);
 }
 
+inline bool has_collided(void) {
+    return snake_y <= 0;
+}
+
 void move_snake(void) {
     snake_y -= TILE_SIZE;
+    if (has_collided()) {
+        snake_x = random_tile_x();
+        snake_y = random_tile_y();
+    }
     move_sprite(0, snake_x, snake_y);
 }

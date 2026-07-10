@@ -1,5 +1,6 @@
 #include <gb/gb.h>
 #include "snake.h"
+#include "random.h"
 
 #define TICK_RATE 30
 
@@ -7,6 +8,7 @@ void main(void) {
     DISPLAY_ON;
     SHOW_SPRITES;
 
+    init_random();
     init_snake();
 
     uint8_t move_timer = TICK_RATE;

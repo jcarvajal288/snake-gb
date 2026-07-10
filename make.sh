@@ -5,11 +5,12 @@ rm *.gb
 
 # compile .c files into .o files
 $LCC -c -o main.o src/main.c
+$LCC -c -o random.o src/random.c
 $LCC -c -o snake.o src/snake.c
 $LCC -c -o head_sprite.o sprites/head_sprite.c
 
 # compile a .gb file from the ocmpiled .o files
-$LCC -o Snake.gb main.o snake.o head_sprite.o
+$LCC -o Snake.gb main.o random.o snake.o head_sprite.o
 
 # delete intermediate files created for the compilation process
 rm *.asm
