@@ -1,0 +1,11 @@
+x Show head sprite in center of screen
+_ Move head sprite up a cell every second
+_ Make body, bent body, and tail sprites
+_ Move a three tile snake (head, body, tail) 
+_ Turn snake with joypad
+_ Make apple sprite
+_ Draw apple sprite to random non-snake tile
+_ Snake eats apple when moving over it
+_ Respawn apple after eating
+_ Grow snake after eating
+_ Restart game when snake collides with itself
