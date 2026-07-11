@@ -7,6 +7,8 @@
 void main(void) {
     DISPLAY_ON;
     SHOW_SPRITES;
+    SHOW_BKG;
+    BGP_REG = 0xE4;
 
     init_random();
     init_snake();
