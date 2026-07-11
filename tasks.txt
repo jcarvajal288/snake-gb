@@ -2,6 +2,7 @@ x Show head sprite in center of screen
 x Move head sprite up a cell every 30 frames
 x Respawn snake at a random location when the snake hits the northern wall
 x Make body, bent body, and tail sprites
+x Switch to background snake instead of sprite snake
 _ Move a three tile snake (head, body, tail) 
 _ Turn snake with joypad
 _ Change respawn logic to trigger when the snake hits any wall

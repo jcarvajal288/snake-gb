@@ -33,7 +33,10 @@ unsigned char snake_map[] = {
 };
 
 
-inline void set_tile(uint8_t x, uint8_t y, unsigned char tile_value) {
+void set_tile(uint8_t x, uint8_t y, unsigned char tile_value) {
+    if (x < 0 || x > TILE_MAP_WIDTH - 1 || y < 0 || y > TILE_MAP_HEIGHT - 1) {
+        return;
+    }
     uint8_t index = (y - 1) * TILE_MAP_WIDTH + (x - 1); 
     snake_map[index] = tile_value;
 }
