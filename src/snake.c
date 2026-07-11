@@ -40,9 +40,7 @@ inline void set_tile(uint8_t x, uint8_t y, unsigned char tile_value) {
 
 void init_snake(void) {
     set_bkg_data(0, NUM_SNAKE_TILES, snake_tiles);
-    uint8_t x = 10;
-    uint8_t y = 9;
-    set_tile(x, y, HEAD_TILE_N);
+    set_tile(snake_x, snake_y, HEAD_TILE_N);
     set_bkg_tiles(0, 0, TILE_MAP_WIDTH, TILE_MAP_HEIGHT, snake_map);
 }
 
@@ -51,10 +49,12 @@ inline bool has_collided(void) {
 }
 
 void move_snake(void) {
-    snake_y -= TILE_SIZE;
+    set_tile(snake_x, snake_y, BLANK_TILE);
+    snake_y -= 1;
     if (has_collided()) {
         snake_x = random_tile_x();
         snake_y = random_tile_y();
     }
-    move_sprite(0, snake_x, snake_y);
+    set_tile(snake_x, snake_y, HEAD_TILE_N);
+    set_bkg_tiles(0, 0, TILE_MAP_WIDTH, TILE_MAP_HEIGHT, snake_map);
 }
