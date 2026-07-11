@@ -1,12 +1,13 @@
 #include <gb/gb.h>
 #include <stdbool.h>
-#include "../sprites/head_sprite.h"
+#include "sprites.h"
 #include "random.h"
 
 #define TILE_SIZE 8
 
 uint8_t snake_x = 84;
 uint8_t snake_y = 88;
+
 
 void init_snake(void) {
     set_sprite_data(0, 1, HeadSprite);
