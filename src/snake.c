@@ -1,5 +1,6 @@
 #include <gb/gb.h>
 #include <gbdk/gbdk-lib.h>
+#include <gbdk/emu_debug.h>
 #include <stdbool.h>
 #include "sprites.h"
 #include "random.h"
@@ -51,6 +52,17 @@ inline void set_snake_path(uint8_t i, uint8_t x, uint8_t y) {
     snake_path[i] = (x << 4) + y;
 }
 
+// TODO: optimize this to only delete tiles that are filled
+void clear_snake(void) {
+    for (uint16_t i = 0; i < NUM_TILES; i++) {
+        snake_map[i] = BLANK_TILE;
+    }
+    // TODO: this does not delete every tile
+    // for(uint16_t i = 0; i < snake_path_length; i++) {
+    //     set_tile(snake_map[i], BLANK_TILE);
+    // }
+}
+
 void draw_snake(void) {
     set_tile(snake_path[0], HEAD_TILE_N);
     for(int16_t i = 1; i < snake_path_length; i++) {
@@ -71,22 +83,21 @@ void init_snake(void) {
 }
 
 inline bool has_collided(void) {
-    return snake_path[0] & 0xF == 0;
+    uint8_t x = snake_path[0] >> 4;
+    uint8_t y = snake_path[0] & 0xF;
+    EMU_printf("(%d, %d)\n", x, y);
+    return y == 1;
 }
 
 void move_snake(void) {
-    // if (has_collided()) {
-    //     init_snake();
-    //     return;
-    // }
+    EMU_printf("Beginning move\n");
 
-    // TODO: figure out why below commented section leaves the tail
-    for (uint16_t i = 0; i < NUM_TILES; i++) {
-        snake_map[i] = BLANK_TILE;
+    clear_snake();
+
+    if (has_collided()) {
+        init_snake();
+        return;
     }
-    // for(uint16_t i = 0; i < snake_path_length; i++) {
-    //     set_tile(snake_map[i], BLANK_TILE);
-    // }
 
     for(uint16_t i = snake_path_length - 1; i > 0; i--) {
         snake_path[i] = snake_path[i - 1];
