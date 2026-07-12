@@ -10,11 +10,19 @@
 #define TILE_MAP_HEIGHT 18
 #define NUM_TILES TILE_MAP_WIDTH * TILE_MAP_HEIGHT
 
+#define MOVE_N 1
+#define MOVE_E 2
+#define MOVE_W 3
+#define MOVE_S 4
+
+uint8_t move_dir = MOVE_N;
+
 // an array of snake positions.
 // filled with 0xFF (EMPTY_SNAKE) to signify positions the snake doesn't occupy yet
 // occupied positions are x,y coordinates packed bitwise into a uint8: xxxxyyyy.
 uint8_t snake_path[NUM_TILES];
 uint16_t snake_path_length = 3;
+
 
 uint8_t snake_map[] = {
     //0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x00, 0x00, 
@@ -77,6 +85,7 @@ void init_snake(void) {
     set_snake_path(1, 10, 10);
     set_snake_path(2, 10, 11);
     snake_path_length = 3;
+    move_dir = MOVE_N;
 
     set_bkg_data(0, NUM_SNAKE_TILES, snake_tiles);
     draw_snake();
@@ -85,14 +94,34 @@ void init_snake(void) {
 inline bool has_collided(void) {
     uint8_t x = snake_path[0] >> 4;
     uint8_t y = snake_path[0] & 0xF;
-    EMU_printf("(%d, %d)\n", x, y);
-    return y == 1;
+    if (move_dir == MOVE_N && y == 1) {
+        return true;
+    } else if (move_dir == MOVE_W && x == 1) {
+        return true;
+    } else if (move_dir == MOVE_E && x == TILE_MAP_WIDTH) {
+        return true;
+    } else if (move_dir == MOVE_S && y == TILE_MAP_HEIGHT) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void read_joypad(void) {
+    if (joypad() & J_UP && move_dir != MOVE_S) {
+        move_dir = MOVE_N;
+    } else if (joypad() & J_LEFT && move_dir != MOVE_E) {
+        move_dir = MOVE_W;
+    } else if (joypad() & J_RIGHT && move_dir != MOVE_W) {
+        move_dir = MOVE_E;
+    } else if (joypad() & J_DOWN && move_dir != MOVE_N) {
+        move_dir = MOVE_S;
+    } 
 }
 
 void move_snake(void) {
-    EMU_printf("Beginning move\n");
-
     clear_snake();
+    read_joypad();
 
     if (has_collided()) {
         init_snake();
@@ -102,6 +131,14 @@ void move_snake(void) {
     for(uint16_t i = snake_path_length - 1; i > 0; i--) {
         snake_path[i] = snake_path[i - 1];
     }
-    snake_path[0] = snake_path[0] - 1; // move head up 1 tile
+    if (move_dir == MOVE_N) {
+        snake_path[0] = snake_path[0] - 1; // move head up 1 tile
+    } else if (move_dir == MOVE_W) {
+        snake_path[0] = snake_path[0] - 0x10; // move head left 1 tile
+    } else if (move_dir == MOVE_E) {
+        snake_path[0] = snake_path[0] + 0x10; // move head right 1 tile
+    } else if (move_dir == MOVE_S) {
+        snake_path[0] = snake_path[0] + 1; // move head down 1 tile
+    }
     draw_snake();
 }
