@@ -8,12 +8,12 @@
 #define TILE_MAP_WIDTH 20
 #define TILE_MAP_HEIGHT 18
 #define NUM_TILES TILE_MAP_WIDTH * TILE_MAP_HEIGHT
-#define EMPTY_SNAKE 0xFF
 
 // an array of snake positions.
 // filled with 0xFF (EMPTY_SNAKE) to signify positions the snake doesn't occupy yet
 // occupied positions are x,y coordinates packed bitwise into a uint8: xxxxyyyy.
 uint8_t snake_path[NUM_TILES];
+uint16_t snake_path_length = 3;
 
 uint8_t snake_map[] = {
     //0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x00, 0x00, 
@@ -52,47 +52,45 @@ inline void set_snake_path(uint8_t i, uint8_t x, uint8_t y) {
 }
 
 void draw_snake(void) {
-    // erase previous snake
-    int8_t i = 0;
-    while(snake_path[i] != EMPTY_SNAKE) {
-        snake_map[i] = EMPTY_SNAKE;
-        i++;
-    }
-
-    // draw new snake
     set_tile(snake_path[0], HEAD_TILE_N);
-    i = 1;
-    while(snake_path[i] != EMPTY_SNAKE) {
+    for(int16_t i = 1; i < snake_path_length; i++) {
         set_tile(snake_path[i], BODY_VERTICAL_TILE);
-        i++;
     }
-    set_tile(snake_path[i - 1], TAIL_TILE_S);
-}
-
-void init_snake(void) {
-    for (uint16_t i = 0; i < NUM_TILES; i++) {
-        snake_path[i] = EMPTY_SNAKE;
-    }
-    set_snake_path(0, 10, 9);
-    set_snake_path(1, 10, 10);
-    set_snake_path(2, 10, 11);
-
-    set_bkg_data(0, NUM_SNAKE_TILES, snake_tiles);
-    draw_snake();
+    set_tile(snake_path[snake_path_length - 1], TAIL_TILE_S);
     set_bkg_tiles(0, 0, TILE_MAP_WIDTH, TILE_MAP_HEIGHT, snake_map);
 }
 
+void init_snake(void) {
+    set_snake_path(0, 10, 9);
+    set_snake_path(1, 10, 10);
+    set_snake_path(2, 10, 11);
+    snake_path_length = 3;
+
+    set_bkg_data(0, NUM_SNAKE_TILES, snake_tiles);
+    draw_snake();
+}
+
 inline bool has_collided(void) {
-    return snake_path[0] & 0xF <= 0;
+    return snake_path[0] & 0xF == 0;
 }
 
 void move_snake(void) {
-    // set_tile(snake_x, snake_y, BLANK_TILE);
-    // snake_y -= 1;
     // if (has_collided()) {
-    //     snake_x = random_tile_x();
-    //     snake_y = random_tile_y();
+    //     init_snake();
+    //     return;
     // }
-    // set_tile(snake_x, snake_y, HEAD_TILE_N);
-    // set_bkg_tiles(0, 0, TILE_MAP_WIDTH, TILE_MAP_HEIGHT, snake_map);
+
+    // TODO: figure out why below commented section leaves the tail
+    for (uint16_t i = 0; i < NUM_TILES; i++) {
+        snake_map[i] = BLANK_TILE;
+    }
+    // for(uint16_t i = 0; i < snake_path_length; i++) {
+    //     set_tile(snake_map[i], BLANK_TILE);
+    // }
+
+    for(uint16_t i = snake_path_length - 1; i > 0; i--) {
+        snake_path[i] = snake_path[i - 1];
+    }
+    snake_path[0] = snake_path[0] - 1; // move head up 1 tile
+    draw_snake();
 }
