@@ -4,8 +4,9 @@ x Respawn snake at a random location when the snake hits the northern wall
 x Make body, bent body, and tail sprites
 x Switch to background snake instead of sprite snake
 x Move a three tile snake (head, body, tail) 
-_ Turn snake with joypad
-_ Change respawn logic to trigger when the snake hits any wall
+x Turn snake with joypad
+x Change respawn logic to trigger when the snake hits any wall
+_ Draw correct tiles for all snake configurations
 _ Make apple sprite
 _ Draw apple sprite to random non-snake tile
 _ Snake eats apple when moving over it

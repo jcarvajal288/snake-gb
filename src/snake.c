@@ -44,16 +44,54 @@ uint8_t snake_map[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
+inline uint16_t get_x(uint16_t path_value) {
+    return path_value >> 8;
+}
 
-void set_tile(uint16_t path_value, uint8_t tile_value) {
+inline uint16_t get_y(uint16_t path_value) {
+    return path_value & 0xFF;
+}
+
+void set_tile(uint16_t path_index) {
+    uint16_t path_value = snake_path[path_index];
     uint16_t x = path_value >> 8;
     uint16_t y = path_value & 0xFF;
-    uint16_t index = (y - 1) * TILE_MAP_WIDTH + (x - 1); 
-    snake_map[index] = tile_value;
-    // if (x < TILE_MAP_WIDTH - 1 && y < TILE_MAP_HEIGHT - 1) {
-    //     uint16_t index = (y - 1) * TILE_MAP_WIDTH + (x - 1); 
-    //     snake_map[index] = tile_value;
-    // }
+
+    uint8_t tile_value;
+    if (path_index == 0) {
+        switch(move_dir) {
+            case MOVE_N:
+                tile_value = HEAD_TILE_N;
+                break;
+            case MOVE_E:
+                tile_value = HEAD_TILE_E;
+                break;
+            case MOVE_W:
+                tile_value = HEAD_TILE_W;
+                break;
+            default:
+                tile_value = HEAD_TILE_S;
+                break;
+        }
+    } else if (path_index == snake_path_length - 1) {
+        uint16_t next_tile = snake_path[snake_path_length - 2];
+        uint16_t next_x = get_x(next_tile);
+        uint16_t next_y = get_y(next_tile);
+        if (x < next_x) {
+            tile_value = TAIL_TILE_E;
+        } else if (x > next_x) {
+            tile_value = TAIL_TILE_W;
+        } else if (y < next_y) {
+            tile_value = TAIL_TILE_N;
+        } else {
+            tile_value = TAIL_TILE_S;
+        }
+    } else {
+        tile_value = BODY_VERTICAL_TILE;
+    }
+
+    uint16_t map_index = (y - 1) * TILE_MAP_WIDTH + (x - 1); 
+    snake_map[map_index] = tile_value;
 }
 
 inline void set_snake_path(uint16_t i, uint16_t x, uint16_t y) {
@@ -72,11 +110,11 @@ void clear_snake(void) {
 }
 
 void draw_snake(void) {
-    set_tile(snake_path[0], HEAD_TILE_N);
-    for(int16_t i = 1; i < snake_path_length; i++) {
-        set_tile(snake_path[i], BODY_VERTICAL_TILE);
+    //set_tile(snake_path[0], HEAD_TILE_N);
+    for(int16_t i = 0; i < snake_path_length; i++) {
+        set_tile(i);
     }
-    set_tile(snake_path[snake_path_length - 1], TAIL_TILE_S);
+    //set_tile(snake_path[snake_path_length - 1], TAIL_TILE_S);
     set_bkg_tiles(0, 0, TILE_MAP_WIDTH, TILE_MAP_HEIGHT, snake_map);
 }
 
@@ -92,8 +130,8 @@ void init_snake(void) {
 }
 
 inline bool has_collided(void) {
-    uint8_t x = snake_path[0] >> 8;
-    uint8_t y = snake_path[0] & 0xFF;
+    uint8_t x = get_x(snake_path[0]);
+    uint8_t y = get_y(snake_path[0]);
     if (move_dir == MOVE_N && y == 1) {
         return true;
     } else if (move_dir == MOVE_W && x == 1) {
@@ -140,7 +178,7 @@ void move_snake(void) {
     } else if (move_dir == MOVE_S) {
         snake_path[0] = snake_path[0] + 1; // move head down 1 tile
     }
-    uint8_t x = snake_path[0] >> 8;
-    uint8_t y = snake_path[0] & 0xFF;
+    uint8_t x = get_x(snake_path[0]);
+    uint8_t y = get_y(snake_path[0]);
     draw_snake();
 }
