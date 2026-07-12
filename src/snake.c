@@ -87,7 +87,35 @@ void set_tile(uint16_t path_index) {
             tile_value = TAIL_TILE_S;
         }
     } else {
-        tile_value = BODY_VERTICAL_TILE;
+        uint16_t next_tile = snake_path[path_index - 1];
+        uint16_t next_x = get_x(next_tile);
+        uint16_t next_y = get_y(next_tile);
+        uint16_t prev_tile = snake_path[path_index + 1];
+        uint16_t prev_x = get_x(prev_tile);
+        uint16_t prev_y = get_y(prev_tile);
+        bool prev_east = prev_x > x && prev_y == y;
+        bool prev_west = prev_x < x && prev_y == y;
+        bool prev_north = prev_x == x && prev_y < y;
+        bool prev_south = prev_x == x && prev_y > y;
+        bool next_east = next_x > x && next_y == y;
+        bool next_west = next_x < x && next_y == y;
+        bool next_north = next_x == x && next_y < y;
+        bool next_south = next_x == x && next_y > y;
+
+        if (prev_north && next_south || prev_south && next_north) {
+            tile_value = BODY_VERTICAL_TILE;
+        } else if (prev_east && next_west || prev_west && next_east) {
+            tile_value = BODY_HORIZONTAL_TILE;
+        } 
+        else if (prev_north && next_west || prev_west && next_north) {
+            tile_value = BODY_BENT_TILE_NW;
+        } else if (prev_north && next_east || prev_east && next_north) {
+            tile_value = BODY_BENT_TILE_NE;
+        } else if (prev_south && next_west || prev_west && next_south) {
+            tile_value = BODY_BENT_TILE_SW;
+        } else {
+            tile_value = BODY_BENT_TILE_SE;
+        }
     }
 
     uint16_t map_index = (y - 1) * TILE_MAP_WIDTH + (x - 1); 
