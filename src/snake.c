@@ -10,9 +10,9 @@
 #define NUM_TILES TILE_MAP_WIDTH * TILE_MAP_HEIGHT
 #define EMPTY_SNAKE 0xFF
 
-uint8_t snake_x = 10;
-uint8_t snake_y = 9;
-
+// an array of snake positions.
+// filled with 0xFF (EMPTY_SNAKE) to signify positions the snake doesn't occupy yet
+// occupied positions are x,y coordinates packed bitwise into a uint8: xxxxyyyy.
 uint8_t snake_path[NUM_TILES];
 
 uint8_t snake_map[] = {
@@ -66,6 +66,7 @@ void draw_snake(void) {
         set_tile(snake_path[i], BODY_VERTICAL_TILE);
         i++;
     }
+    set_tile(snake_path[i - 1], TAIL_TILE_S);
 }
 
 void init_snake(void) {
@@ -82,7 +83,7 @@ void init_snake(void) {
 }
 
 inline bool has_collided(void) {
-    return snake_y <= 0;
+    return snake_path[0] & 0xF <= 0;
 }
 
 void move_snake(void) {
