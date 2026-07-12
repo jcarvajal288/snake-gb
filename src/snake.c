@@ -18,14 +18,12 @@
 uint8_t move_dir = MOVE_N;
 
 // an array of snake positions.
-// filled with 0xFF (EMPTY_SNAKE) to signify positions the snake doesn't occupy yet
-// occupied positions are x,y coordinates packed bitwise into a uint8: xxxxyyyy.
-uint8_t snake_path[NUM_TILES];
+// occupied positions are x,y coordinates packed bitwise into a uint16: xxxxxxxxyyyyyyyy.
+uint16_t snake_path[NUM_TILES];
 uint16_t snake_path_length = 3;
 
 
 uint8_t snake_map[] = {
-    //0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x00, 0x00, 
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -47,17 +45,19 @@ uint8_t snake_map[] = {
 };
 
 
-void set_tile(uint8_t path_value, uint8_t tile_value) {
-    uint8_t x = path_value >> 4;
-    uint8_t y = path_value & 0xF;
-    if (x < TILE_MAP_WIDTH - 1 && y < TILE_MAP_HEIGHT - 1) {
-        uint8_t index = (y - 1) * TILE_MAP_WIDTH + (x - 1); 
-        snake_map[index] = tile_value;
-    }
+void set_tile(uint16_t path_value, uint8_t tile_value) {
+    uint16_t x = path_value >> 8;
+    uint16_t y = path_value & 0xFF;
+    uint16_t index = (y - 1) * TILE_MAP_WIDTH + (x - 1); 
+    snake_map[index] = tile_value;
+    // if (x < TILE_MAP_WIDTH - 1 && y < TILE_MAP_HEIGHT - 1) {
+    //     uint16_t index = (y - 1) * TILE_MAP_WIDTH + (x - 1); 
+    //     snake_map[index] = tile_value;
+    // }
 }
 
-inline void set_snake_path(uint8_t i, uint8_t x, uint8_t y) {
-    snake_path[i] = (x << 4) + y;
+inline void set_snake_path(uint16_t i, uint16_t x, uint16_t y) {
+    snake_path[i] = (x << 8) + y;
 }
 
 // TODO: optimize this to only delete tiles that are filled
@@ -92,8 +92,8 @@ void init_snake(void) {
 }
 
 inline bool has_collided(void) {
-    uint8_t x = snake_path[0] >> 4;
-    uint8_t y = snake_path[0] & 0xF;
+    uint8_t x = snake_path[0] >> 8;
+    uint8_t y = snake_path[0] & 0xFF;
     if (move_dir == MOVE_N && y == 1) {
         return true;
     } else if (move_dir == MOVE_W && x == 1) {
@@ -134,11 +134,13 @@ void move_snake(void) {
     if (move_dir == MOVE_N) {
         snake_path[0] = snake_path[0] - 1; // move head up 1 tile
     } else if (move_dir == MOVE_W) {
-        snake_path[0] = snake_path[0] - 0x10; // move head left 1 tile
+        snake_path[0] = snake_path[0] - 0x100; // move head left 1 tile
     } else if (move_dir == MOVE_E) {
-        snake_path[0] = snake_path[0] + 0x10; // move head right 1 tile
+        snake_path[0] = snake_path[0] + 0x100; // move head right 1 tile
     } else if (move_dir == MOVE_S) {
         snake_path[0] = snake_path[0] + 1; // move head down 1 tile
     }
+    uint8_t x = snake_path[0] >> 8;
+    uint8_t y = snake_path[0] & 0xFF;
     draw_snake();
 }
