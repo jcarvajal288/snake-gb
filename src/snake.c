@@ -1,4 +1,5 @@
 #include <gb/gb.h>
+#include <gbdk/gbdk-lib.h>
 #include <stdbool.h>
 #include "sprites.h"
 #include "random.h"
@@ -6,11 +7,15 @@
 #define TILE_SIZE 8
 #define TILE_MAP_WIDTH 20
 #define TILE_MAP_HEIGHT 18
+#define NUM_TILES TILE_MAP_WIDTH * TILE_MAP_HEIGHT
+#define EMPTY_SNAKE 0xFF
 
 uint8_t snake_x = 10;
 uint8_t snake_y = 9;
 
-unsigned char snake_map[] = {
+uint8_t snake_path[NUM_TILES];
+
+uint8_t snake_map[] = {
     //0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x00, 0x00, 
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -33,17 +38,46 @@ unsigned char snake_map[] = {
 };
 
 
-void set_tile(uint8_t x, uint8_t y, unsigned char tile_value) {
-    if (x < 0 || x > TILE_MAP_WIDTH - 1 || y < 0 || y > TILE_MAP_HEIGHT - 1) {
-        return;
+void set_tile(uint8_t path_value, uint8_t tile_value) {
+    uint8_t x = path_value >> 4;
+    uint8_t y = path_value & 0xF;
+    if (x < TILE_MAP_WIDTH - 1 && y < TILE_MAP_HEIGHT - 1) {
+        uint8_t index = (y - 1) * TILE_MAP_WIDTH + (x - 1); 
+        snake_map[index] = tile_value;
     }
-    uint8_t index = (y - 1) * TILE_MAP_WIDTH + (x - 1); 
-    snake_map[index] = tile_value;
+}
+
+inline void set_snake_path(uint8_t i, uint8_t x, uint8_t y) {
+    snake_path[i] = (x << 4) + y;
+}
+
+void draw_snake(void) {
+    // erase previous snake
+    int8_t i = 0;
+    while(snake_path[i] != EMPTY_SNAKE) {
+        snake_map[i] = EMPTY_SNAKE;
+        i++;
+    }
+
+    // draw new snake
+    set_tile(snake_path[0], HEAD_TILE_N);
+    i = 1;
+    while(snake_path[i] != EMPTY_SNAKE) {
+        set_tile(snake_path[i], BODY_VERTICAL_TILE);
+        i++;
+    }
 }
 
 void init_snake(void) {
+    for (uint16_t i = 0; i < NUM_TILES; i++) {
+        snake_path[i] = EMPTY_SNAKE;
+    }
+    set_snake_path(0, 10, 9);
+    set_snake_path(1, 10, 10);
+    set_snake_path(2, 10, 11);
+
     set_bkg_data(0, NUM_SNAKE_TILES, snake_tiles);
-    set_tile(snake_x, snake_y, HEAD_TILE_N);
+    draw_snake();
     set_bkg_tiles(0, 0, TILE_MAP_WIDTH, TILE_MAP_HEIGHT, snake_map);
 }
 
@@ -52,12 +86,12 @@ inline bool has_collided(void) {
 }
 
 void move_snake(void) {
-    set_tile(snake_x, snake_y, BLANK_TILE);
-    snake_y -= 1;
-    if (has_collided()) {
-        snake_x = random_tile_x();
-        snake_y = random_tile_y();
-    }
-    set_tile(snake_x, snake_y, HEAD_TILE_N);
-    set_bkg_tiles(0, 0, TILE_MAP_WIDTH, TILE_MAP_HEIGHT, snake_map);
+    // set_tile(snake_x, snake_y, BLANK_TILE);
+    // snake_y -= 1;
+    // if (has_collided()) {
+    //     snake_x = random_tile_x();
+    //     snake_y = random_tile_y();
+    // }
+    // set_tile(snake_x, snake_y, HEAD_TILE_N);
+    // set_bkg_tiles(0, 0, TILE_MAP_WIDTH, TILE_MAP_HEIGHT, snake_map);
 }
