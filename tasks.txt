@@ -9,8 +9,8 @@ x Change respawn logic to trigger when the snake hits any wall
 x Draw correct tiles for all snake configurations
 x Make apple sprite
 x Draw apple sprite to random non-snake tile
-_ Snake eats apple when moving over it
-_ Respawn apple after eating
+x Snake eats apple when moving over it
+x Respawn apple after eating
 _ Grow snake after eating
 _ Restart game when snake collides with itself
 
