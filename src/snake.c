@@ -2,13 +2,9 @@
 #include <gbdk/gbdk-lib.h>
 #include <gbdk/emu_debug.h>
 #include <stdbool.h>
+#include "snake.h"
 #include "sprites.h"
 #include "random.h"
-
-#define TILE_SIZE 8
-#define TILE_MAP_WIDTH 20
-#define TILE_MAP_HEIGHT 18
-#define NUM_TILES TILE_MAP_WIDTH * TILE_MAP_HEIGHT
 
 #define MOVE_N 1
 #define MOVE_E 2
@@ -44,18 +40,33 @@ uint8_t snake_map[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-inline uint16_t get_x(uint16_t path_value) {
+inline uint8_t get_x(uint16_t path_value) {
     return path_value >> 8;
 }
 
-inline uint16_t get_y(uint16_t path_value) {
+inline uint8_t get_y(uint16_t path_value) {
     return path_value & 0xFF;
+}
+
+bool point_in_snake_path(uint8_t x, uint8_t y) {
+    uint16_t tile;
+    uint8_t snake_x;
+    uint8_t snake_y;
+    for (uint16_t i = 0; i < snake_path_length; i++) {
+        tile = snake_path[i];
+        snake_x = get_x(tile);
+        snake_y = get_y(tile);
+        if (x == snake_x && y == snake_y) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void set_tile(uint16_t path_index) {
     uint16_t path_value = snake_path[path_index];
-    uint16_t x = path_value >> 8;
-    uint16_t y = path_value & 0xFF;
+    uint8_t x = path_value >> 8;
+    uint8_t y = path_value & 0xFF;
 
     uint8_t tile_value;
     if (path_index == 0) {
@@ -75,8 +86,8 @@ void set_tile(uint16_t path_index) {
         }
     } else if (path_index == snake_path_length - 1) {
         uint16_t next_tile = snake_path[snake_path_length - 2];
-        uint16_t next_x = get_x(next_tile);
-        uint16_t next_y = get_y(next_tile);
+        uint8_t next_x = get_x(next_tile);
+        uint8_t next_y = get_y(next_tile);
         if (x < next_x) {
             tile_value = TAIL_TILE_E;
         } else if (x > next_x) {
@@ -88,11 +99,11 @@ void set_tile(uint16_t path_index) {
         }
     } else {
         uint16_t next_tile = snake_path[path_index - 1];
-        uint16_t next_x = get_x(next_tile);
-        uint16_t next_y = get_y(next_tile);
+        uint8_t next_x = get_x(next_tile);
+        uint8_t next_y = get_y(next_tile);
         uint16_t prev_tile = snake_path[path_index + 1];
-        uint16_t prev_x = get_x(prev_tile);
-        uint16_t prev_y = get_y(prev_tile);
+        uint8_t prev_x = get_x(prev_tile);
+        uint8_t prev_y = get_y(prev_tile);
         bool prev_east = prev_x > x && prev_y == y;
         bool prev_west = prev_x < x && prev_y == y;
         bool prev_north = prev_x == x && prev_y < y;

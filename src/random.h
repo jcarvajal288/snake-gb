@@ -16,11 +16,11 @@ static inline uint8_t random_range(uint8_t lower, uint8_t upper) {
 }
 
 static inline uint8_t random_tile_x(void) {
-    return random_range(0, SCREEN_TILE_WIDTH) * 8;
+    return random_range(0, SCREEN_TILE_WIDTH);
 }
 
 static inline uint8_t random_tile_y(void) {
-    return random_range(0, SCREEN_TILE_HEIGHT) * 8;
+    return random_range(0, SCREEN_TILE_HEIGHT);
 }
 
 #endif

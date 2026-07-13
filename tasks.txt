@@ -7,9 +7,12 @@ x Move a three tile snake (head, body, tail)
 x Turn snake with joypad
 x Change respawn logic to trigger when the snake hits any wall
 x Draw correct tiles for all snake configurations
-_ Make apple sprite
-_ Draw apple sprite to random non-snake tile
+x Make apple sprite
+x Draw apple sprite to random non-snake tile
 _ Snake eats apple when moving over it
 _ Respawn apple after eating
 _ Grow snake after eating
 _ Restart game when snake collides with itself
+
+_ Prompt player to press Start at game load
+_ Poll joypad beyond the snake_move() call

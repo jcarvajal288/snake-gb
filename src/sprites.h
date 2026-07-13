@@ -23,4 +23,6 @@
 
 extern const uint8_t snake_tiles[0x10 * NUM_SNAKE_TILES];
 
+extern const uint8_t apple_sprite[16];
+
 #endif
