@@ -88,9 +88,19 @@ void set_tile(uint16_t path_index) {
                 break;
         }
     } else if (path_index == snake_path_length - 1) {
-        uint16_t next_tile = snake_path[snake_path_length - 2];
-        uint8_t next_x = get_x(next_tile);
-        uint8_t next_y = get_y(next_tile);
+        uint16_t i = 2;
+        uint16_t next_tile;
+        uint8_t next_x;
+        uint8_t next_y;
+        // if the snake has just grown the last few tiles are stacked on top of each other
+        do {
+            next_tile = snake_path[snake_path_length - i];
+            next_x = get_x(next_tile);
+            next_y = get_y(next_tile);
+            i++;
+        } while (next_x == x && next_y == y);
+        EMU_printf("current: (%d, %d)", x, y);
+        EMU_printf("next: (%d, %d)", next_x, next_y);
         if (x < next_x) {
             tile_value = TAIL_TILE_E;
         } else if (x > next_x) {
@@ -210,4 +220,10 @@ void move_snake(void) {
     uint8_t x = get_x(snake_path[0]);
     uint8_t y = get_y(snake_path[0]);
     draw_snake();
+}
+
+void grow_snake(void) {
+    snake_path[snake_path_length] = snake_path[snake_path_length - 1];
+    snake_path[snake_path_length + 1] = snake_path[snake_path_length - 1];
+    snake_path_length += 2;
 }

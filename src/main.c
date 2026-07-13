@@ -10,16 +10,17 @@ uint8_t apple_y;
 
 void spawn_apple(void) {
     do {
-        apple_x = random_tile_x();
-        apple_y = random_tile_y();
+        // need to add 1 to account for move_sprite subtracting -8,-16 to all sprite positions
+        apple_x = random_tile_x() + 1;
+        apple_y = random_tile_y() + 1;
     } while (point_in_snake_path(apple_x, apple_y));
-    EMU_printf("Apple spawn: (%d, %d)\n", apple_x, apple_y);
-    move_sprite(0, apple_x * TILE_SIZE, apple_y * TILE_SIZE + 8);
+    // EMU_printf("Apple spawn: (%d, %d)\n", apple_x, apple_y);
+    move_sprite(0, apple_x * TILE_SIZE, apple_y * TILE_SIZE + 8); 
 }
 
 void eat_apple(void) {
     spawn_apple();
-    // grow_snake();
+    grow_snake();
 }
 
 void read_joypad(void) {
@@ -53,7 +54,7 @@ void main(void) {
         read_joypad();
         if (move_timer <= 0) {
             move_snake();
-            EMU_printf("Snake head: (%d, %d)\n", snake_head_x(), snake_head_y());
+            // EMU_printf("Snake head: (%d, %d)\n", snake_head_x(), snake_head_y());
             if (snake_head_x() == apple_x && snake_head_y() == apple_y) {
                 eat_apple();
             }

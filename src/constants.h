@@ -11,4 +11,6 @@
 #define MOVE_W 3
 #define MOVE_S 4
 
+#define SNAKE_GROW_RATE 3
+
 #endif
