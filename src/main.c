@@ -20,6 +20,18 @@ void spawn_apple(void) {
 }
 
 
+void read_joypad(void) {
+    if (joypad() & J_UP && move_dir != MOVE_S) {
+        move_dir = MOVE_N;
+    } else if (joypad() & J_LEFT && move_dir != MOVE_E) {
+        move_dir = MOVE_W;
+    } else if (joypad() & J_RIGHT && move_dir != MOVE_W) {
+        move_dir = MOVE_E;
+    } else if (joypad() & J_DOWN && move_dir != MOVE_N) {
+        move_dir = MOVE_S;
+    } 
+}
+
 void main(void) {
     DISPLAY_ON;
     SHOW_SPRITES;
@@ -35,6 +47,7 @@ void main(void) {
     uint8_t move_timer = TICK_RATE;
 
     while(1) {
+        read_joypad();
         if (move_timer <= 0) {
             move_snake();
             move_timer = TICK_RATE;

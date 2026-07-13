@@ -6,11 +6,6 @@
 #include "sprites.h"
 #include "random.h"
 
-#define MOVE_N 1
-#define MOVE_E 2
-#define MOVE_W 3
-#define MOVE_S 4
-
 uint8_t move_dir = MOVE_N;
 
 // an array of snake positions.
@@ -184,21 +179,8 @@ inline bool has_collided(void) {
     }
 }
 
-void read_joypad(void) {
-    if (joypad() & J_UP && move_dir != MOVE_S) {
-        move_dir = MOVE_N;
-    } else if (joypad() & J_LEFT && move_dir != MOVE_E) {
-        move_dir = MOVE_W;
-    } else if (joypad() & J_RIGHT && move_dir != MOVE_W) {
-        move_dir = MOVE_E;
-    } else if (joypad() & J_DOWN && move_dir != MOVE_N) {
-        move_dir = MOVE_S;
-    } 
-}
-
 void move_snake(void) {
     clear_snake();
-    read_joypad();
 
     if (has_collided()) {
         init_snake();

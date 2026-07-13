@@ -14,5 +14,6 @@ _ Respawn apple after eating
 _ Grow snake after eating
 _ Restart game when snake collides with itself
 
+===================================
 _ Prompt player to press Start at game load
-_ Poll joypad beyond the snake_move() call
+x Poll joypad beyond the snake_move() call
