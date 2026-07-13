@@ -12,13 +12,13 @@ x Draw apple sprite to random non-snake tile
 x Snake eats apple when moving over it
 x Respawn apple after eating
 x Grow snake after eating
-_ Restart game when snake collides with itself
-
-== CLEANUP =================================
-_ Prompt player to press Start at game load
-x Poll joypad beyond the snake_move() call
-_ Use a real makefile
+x Restart game when snake collides with itself
+_ Make start screen
 _ Display snake length at game over and prompt to restart
 
+== CLEANUP =================================
+x Poll joypad beyond the snake_move() call
+_ Use a real makefile
+
 == BUGS == =================================
-_ Apple sometimes spawns outside the board
+x Apple sometimes spawns outside the board

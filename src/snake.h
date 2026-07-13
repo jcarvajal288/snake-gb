@@ -13,6 +13,7 @@ void init_snake(void);
 void move_snake(void);
 void grow_snake(void);
 bool point_in_snake_path(uint8_t, uint8_t);
+bool snake_eat_itself(void);
 inline uint8_t snake_head_x(void);
 inline uint8_t snake_head_y(void);
 

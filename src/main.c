@@ -1,9 +1,8 @@
 #include <gb/gb.h>
 #include <gbdk/emu_debug.h>
+#include "constants.h"
 #include "snake.h"
 #include "random.h"
-
-#define TICK_RATE 30
 
 uint8_t apple_x;
 uint8_t apple_y;
@@ -42,11 +41,11 @@ void main(void) {
     BGP_REG = 0xE4;
 
     set_sprite_data(0, 1, apple_sprite);
+    set_sprite_tile(0, 0);
 
     init_random();
     init_snake();
     spawn_apple();
-    set_sprite_tile(0, 0);
 
     uint8_t move_timer = TICK_RATE;
 
@@ -54,9 +53,11 @@ void main(void) {
         read_joypad();
         if (move_timer <= 0) {
             move_snake();
-            // EMU_printf("Snake head: (%d, %d)\n", snake_head_x(), snake_head_y());
             if (snake_head_x() == apple_x && snake_head_y() == apple_y) {
                 eat_apple();
+            } else if (snake_eat_itself()) {
+                init_snake();
+                spawn_apple();
             }
             move_timer = TICK_RATE;
         } else {

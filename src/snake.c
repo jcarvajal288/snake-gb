@@ -171,6 +171,7 @@ void draw_snake(void) {
 }
 
 void init_snake(void) {
+    clear_snake();
     set_snake_path(0, 10, 9);
     set_snake_path(1, 10, 10);
     set_snake_path(2, 10, 11);
@@ -226,4 +227,22 @@ void grow_snake(void) {
     snake_path[snake_path_length] = snake_path[snake_path_length - 1];
     snake_path[snake_path_length + 1] = snake_path[snake_path_length - 1];
     snake_path_length += 2;
+}
+
+bool snake_eat_itself(void) {
+    uint16_t head_tile = snake_path[0];
+    uint16_t head_x = get_x(head_tile);
+    uint16_t head_y = get_y(head_tile);
+    uint16_t current_tile;
+    uint8_t current_x;
+    uint8_t current_y;
+    for (uint16_t i = 1; i < snake_path_length; i++) {
+        current_tile = snake_path[i];
+        current_x = get_x(current_tile);
+        current_y = get_y(current_tile);
+        if (head_x == current_x && head_y == current_y) {
+            return true;
+        }
+    }
+    return false;
 }
