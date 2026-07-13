@@ -43,6 +43,14 @@ inline uint8_t get_y(uint16_t path_value) {
     return path_value & 0xFF;
 }
 
+inline uint8_t snake_head_x(void) {
+    return get_x(snake_path[0]);
+}
+
+inline uint8_t snake_head_y(void) {
+    return get_y(snake_path[0]);
+}
+
 bool point_in_snake_path(uint8_t x, uint8_t y) {
     uint16_t tile;
     uint8_t snake_x;

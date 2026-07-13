@@ -5,20 +5,22 @@
 
 #define TICK_RATE 30
 
+uint8_t apple_x;
+uint8_t apple_y;
+
 void spawn_apple(void) {
-    uint8_t apple_x;
-    uint8_t apple_y;
     do {
         apple_x = random_tile_x();
         apple_y = random_tile_y();
     } while (point_in_snake_path(apple_x, apple_y));
-    set_sprite_tile(0, 0);
-    EMU_printf("apple tile: (%d, %d)\n", apple_x, apple_y);
-    EMU_printf("apple coords: (%d, %d)\n", apple_x * TILE_SIZE, apple_y * TILE_SIZE);
-    move_sprite(0, apple_x * TILE_SIZE, apple_y * TILE_SIZE);
-    // move_sprite(0, 80, 80);
+    EMU_printf("Apple spawn: (%d, %d)\n", apple_x, apple_y);
+    move_sprite(0, apple_x * TILE_SIZE, apple_y * TILE_SIZE + 8);
 }
 
+void eat_apple(void) {
+    spawn_apple();
+    // grow_snake();
+}
 
 void read_joypad(void) {
     if (joypad() & J_UP && move_dir != MOVE_S) {
@@ -43,6 +45,7 @@ void main(void) {
     init_random();
     init_snake();
     spawn_apple();
+    set_sprite_tile(0, 0);
 
     uint8_t move_timer = TICK_RATE;
 
@@ -50,6 +53,10 @@ void main(void) {
         read_joypad();
         if (move_timer <= 0) {
             move_snake();
+            EMU_printf("Snake head: (%d, %d)\n", snake_head_x(), snake_head_y());
+            if (snake_head_x() == apple_x && snake_head_y() == apple_y) {
+                eat_apple();
+            }
             move_timer = TICK_RATE;
         } else {
             move_timer--;
