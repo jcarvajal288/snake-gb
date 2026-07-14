@@ -14,6 +14,7 @@ x Respawn apple after eating
 x Grow snake after eating
 x Restart game when snake collides with itself
 x Make start screen
+_ Play a sound for changing direction, eating apple, and losing
 _ Display snake length at game over and prompt to restart
 
 == CLEANUP =================================

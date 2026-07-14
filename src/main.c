@@ -1,8 +1,9 @@
 #include <gb/gb.h>
 #include <gbdk/emu_debug.h>
 #include "constants.h"
-#include "snake.h"
 #include "random.h"
+#include "snake.h"
+#include "sound.h"
 #include "title_screen.h"
 
 uint8_t apple_x;
@@ -14,12 +15,12 @@ void spawn_apple(void) {
         apple_x = random_tile_x() + 1;
         apple_y = random_tile_y() + 1;
     } while (point_in_snake_path(apple_x, apple_y));
-    // EMU_printf("Apple spawn: (%d, %d)\n", apple_x, apple_y);
     move_sprite(0, apple_x * TILE_SIZE, apple_y * TILE_SIZE + 8); 
 }
 
 void eat_apple(void) {
     spawn_apple();
+    play_eat_apple_sound();
     grow_snake();
 }
 
@@ -40,6 +41,8 @@ void main(void) {
     SHOW_SPRITES;
     SHOW_BKG;
     BGP_REG = 0xE4;
+
+    init_sound();
 
     set_sprite_data(0, 1, apple_sprite);
     set_sprite_tile(0, 0);
