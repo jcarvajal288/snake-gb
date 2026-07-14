@@ -25,6 +25,7 @@ void eat_apple(void) {
 }
 
 void read_joypad(void) {
+    uint8_t old_move_dir = move_dir;
     if (joypad() & J_UP && move_dir != MOVE_S) {
         move_dir = MOVE_N;
     } else if (joypad() & J_LEFT && move_dir != MOVE_E) {
@@ -34,6 +35,9 @@ void read_joypad(void) {
     } else if (joypad() & J_DOWN && move_dir != MOVE_N) {
         move_dir = MOVE_S;
     } 
+    if (move_dir != old_move_dir) {
+        play_move_sound();
+    }
 }
 
 void main(void) {
@@ -61,7 +65,10 @@ void main(void) {
             move_snake();
             if (snake_head_x() == apple_x && snake_head_y() == apple_y) {
                 eat_apple();
-            } else if (snake_eat_itself()) {
+            } else if (has_hit_wall() || snake_eat_itself()) {
+                play_loss_sound();
+                waitpad(J_START);
+                waitpadup();
                 init_snake();
                 spawn_apple();
             }

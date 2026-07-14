@@ -182,7 +182,7 @@ void init_snake(void) {
     draw_snake();
 }
 
-inline bool has_collided(void) {
+bool has_hit_wall(void) {
     uint8_t x = get_x(snake_path[0]);
     uint8_t y = get_y(snake_path[0]);
     if (move_dir == MOVE_N && y == 1) {
@@ -200,11 +200,6 @@ inline bool has_collided(void) {
 
 void move_snake(void) {
     clear_snake();
-
-    if (has_collided()) {
-        init_snake();
-        return;
-    }
 
     for(uint16_t i = snake_path_length - 1; i > 0; i--) {
         snake_path[i] = snake_path[i - 1];

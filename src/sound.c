@@ -14,3 +14,27 @@ void play_eat_apple_sound(void) {
     NR13_REG = 0xA4;
     NR14_REG = 0x83;
 }
+
+void play_move_sound(void) {
+    NR10_REG = 0x70;
+    NR11_REG = 0x57;
+    NR12_REG = 0x42;
+    NR13_REG = 0x17;
+    NR14_REG = 0x84;
+}
+
+void play_loss_sound(void) {
+    NR10_REG = 0x4A;
+    NR11_REG = 0x43;
+    NR12_REG = 0x42;
+    NR13_REG = 0x30;
+    NR14_REG = 0x80;
+
+    delay(100);
+
+    NR10_REG = 0x4A;
+    NR11_REG = 0x43;
+    NR12_REG = 0x42;
+    NR13_REG = 0x30;
+    NR14_REG = 0x80;
+}

@@ -14,7 +14,7 @@ x Respawn apple after eating
 x Grow snake after eating
 x Restart game when snake collides with itself
 x Make start screen
-_ Play a sound for changing direction, eating apple, and losing
+x Play a sound for changing direction, eating apple, and losing
 _ Display snake length at game over and prompt to restart
 
 == CLEANUP =================================
@@ -23,3 +23,4 @@ _ Use a real makefile
 
 == BUGS == =================================
 x Apple sometimes spawns outside the board
+_ 360ing the joystick causes instant loss; restrict to one move per tick
