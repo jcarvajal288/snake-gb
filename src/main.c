@@ -3,6 +3,7 @@
 #include "constants.h"
 #include "snake.h"
 #include "random.h"
+#include "title_screen.h"
 
 uint8_t apple_x;
 uint8_t apple_y;
@@ -43,6 +44,8 @@ void main(void) {
     set_sprite_data(0, 1, apple_sprite);
     set_sprite_tile(0, 0);
 
+    set_bkg_data(TITLE_SCREEN_TILE_OFFSET, TITLE_SCREEN_TILE_COUNT, title_screen_tiles);
+    set_bkg_tiles(0, 0, TITLE_SCREEN_WIDTH, TITLE_SCREEN_HEIGHT, title_screen_map);
     init_random();
     init_snake();
     spawn_apple();

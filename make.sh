@@ -8,9 +8,10 @@ $LCC -c -o main.o src/main.c
 $LCC -c -o random.o src/random.c
 $LCC -c -o snake.o src/snake.c
 $LCC -c -o sprites.o src/sprites.c
+$LCC -c -o title_screen.o src/title_screen.c
 
 # compile a .gb file from the ocmpiled .o files
-$LCC -o Snake.gb main.o random.o snake.o sprites.o
+$LCC -o Snake.gb main.o random.o snake.o sprites.o title_screen.o
 
 # delete intermediate files created for the compilation process
 rm *.asm

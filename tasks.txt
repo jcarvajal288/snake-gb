@@ -13,7 +13,7 @@ x Snake eats apple when moving over it
 x Respawn apple after eating
 x Grow snake after eating
 x Restart game when snake collides with itself
-_ Make start screen
+x Make start screen
 _ Display snake length at game over and prompt to restart
 
 == CLEANUP =================================
